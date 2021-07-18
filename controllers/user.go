@@ -3,6 +3,7 @@ package controllers
 import (
 	"fmt"
 	"net/http"
+	"time"
 
 	"github.com/dgrijalva/jwt-go"
 	"golang.org/x/crypto/bcrypt"
@@ -61,27 +62,23 @@ func Login(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Record not found!"})
 		return
 	}
-	fmt.Println(user.Email)
 	er := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(userEntry.Password))
 	if er != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid password"})
 		return
 	}
-	//atClaims := &Claims{
-	//	ID:         user.ID,
-	//	Authorized: true,
-	//	StandardClaims: jwt.StandardClaims{
-	//		ExpiresAt: time.Now().Add(time.Minute * 15).Unix(),
-	//	},
-	//}
-	at := jwt.New(jwt.SigningMethodHS256)
-	fmt.Println(at)
+	atClaims := &Claims{
+		ID:         user.ID,
+		Authorized: true,
+		StandardClaims: jwt.StandardClaims{
+			ExpiresAt: time.Now().Add(time.Minute * 15).Unix(),
+		},
+	}
+	at := jwt.NewWithClaims(jwt.SigningMethodHS256, atClaims)
 	token, erro := at.SignedString([]byte(privateKey))
-	fmt.Println(erro)
 	if erro != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "internal error"})
 		return
 	}
 	c.JSON(http.StatusOK, gin.H{"data": token})
-
 }
