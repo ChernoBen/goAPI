@@ -14,6 +14,7 @@ func ConnectDataBase() {
 		panic("Connection fail!")
 	}
 	database.AutoMigrate(&Book{})
+	database.AutoMigrate(&User{})
 	//DB sera usado para obter acesso ao banco nos controllers
 	DB = database
 }
