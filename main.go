@@ -16,6 +16,9 @@ func main() {
 	r.POST("/books", controllers.CreateBook)
 	r.PATCH("/books/:id", controllers.UpdateBook)
 	r.DELETE("/books/:id", controllers.Delete)
+	//user
+	r.POST("/user", controllers.CreateUser)
+	r.POST("/auth", controllers.Login)
 
 	r.Run()
 }
